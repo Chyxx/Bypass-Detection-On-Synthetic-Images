@@ -8,12 +8,12 @@ We achieve a decrease in detector recognition rate from 64% to 20% while preserv
 The method of applying random noise multiple times is used to test the detector, so that the gradient information of the detector is not needed.
 
 ### Before processing
-![](https://github.com/Chyxx/Bypass-Detection-On-Synthetic-Images/blob/main/images/sdv2-test.jpg?raw=true)
+![](https://github.com/Chyxx/Bypass-Detection-On-Synthetic-Images/blob/main/images/before.jpg)
 
 ### After processing (with gradient information)
-![](https://github.com/Chyxx/Bypass-Detection-On-Synthetic-Images/blob/main/images/after_process_test.jpg?raw=true)
+![](https://github.com/Chyxx/Bypass-Detection-On-Synthetic-Images/blob/main/images/grad.jpg)
 
 ### After processing (without gradient information)
-![](https://github.com/Chyxx/Bypass-Detection-On-Synthetic-Images/blob/main/images/sdv2.jpg?raw=true)
+![](https://github.com/Chyxx/Bypass-Detection-On-Synthetic-Images/blob/main/images/no_grad.jpg)
 
 

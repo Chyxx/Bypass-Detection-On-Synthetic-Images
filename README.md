@@ -13,10 +13,10 @@ The method of applying random noise multiple times is used to test the detector,
 ### Before processing
 ![](https://github.com/Chyxx/Bypass-Detection-On-Synthetic-Images/blob/main/images/before.jpg)
 
-### After processing (with gradient information)
-![](https://github.com/Chyxx/Bypass-Detection-On-Synthetic-Images/blob/main/images/grad.jpg)
+### After processing (without gradient information from the detector)
+![](https://github.com/Chyxx/Bypass-Detection-On-Synthetic-Images/blob/main/images/after_best.png)
 
-### After processing (without gradient information)
-![](https://github.com/Chyxx/Bypass-Detection-On-Synthetic-Images/blob/main/images/no_grad.jpg)
+### The generated noise to add on images
+![](https://github.com/Chyxx/Bypass-Detection-On-Synthetic-Images/blob/main/images/best_noise.png)
 
 

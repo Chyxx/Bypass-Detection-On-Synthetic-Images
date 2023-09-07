@@ -1,6 +1,6 @@
 # Bypass-Detection-On-Synthetic-Images
 Spoofing detectors for synthetic images through applying noise to synthetic images by neural networks.
-The derector: [see here](https://github.com/ZhendongWang6/DIRE).
+The detector: [see here](https://github.com/ZhendongWang6/DIRE).
 
 # Updata
 **_2023.9.7_**  

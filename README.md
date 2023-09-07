@@ -1,5 +1,6 @@
 # Bypass-Detection-On-Synthetic-Images
 Spoofing detectors for synthetic images through applying noise to synthetic images by neural networks.
+You can download the derector in [here](https://github.com/ZhendongWang6/DIRE)
 
 ## When the gradient information from the detector is given
 We achieve a decrease in detector recognition rate from 64% to 20% while preserving the image quality to the greatest extent.

@@ -3,17 +3,17 @@ Spoofing detectors for synthetic images through applying noise to synthetic imag
 You can download the derector in [](https://github.com/ZhendongWang6/DIRE).
 
 # Updata
-**2023.9.7**  
+**_2023.9.7_**  
 A new method is applied: the gradient direction is estimated by the weighted sum of multiple trial noises. Now, even without the gradient information from the detector, we can achieve even better results. Recognition rate from 64% to 19%, at the same time without any loss of image quality.  
 
-**2023.9.5**  
+**_2023.9.5_**  
 The method of applying random noise multiple times is used to test the detector, so that the gradient information of the detector is not needed.However, the effect of this method is poor: the decrease of recognition rate is small, and the loss of image quality is too high.
 
 ## When the gradient information from the detector is given
 We achieve a decrease in detector recognition rate from 64% to 20% while preserving the image quality to the greatest extent.
 
 ## When the gradient information is not given
-The method of applying random noise multiple times is used to test the detector, so that the gradient information of the detector is not needed.
+
 
 ### Before processing
 ![](https://github.com/Chyxx/Bypass-Detection-On-Synthetic-Images/blob/main/images/before.jpg)

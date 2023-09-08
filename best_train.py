@@ -16,7 +16,7 @@ import pytorch_msssim as PM
 
 from utils.utils import str2bool
 
-from multiprocessor import Processor
+from best_processor import Processor
 from detector import Detector
 
 
@@ -58,9 +58,6 @@ test_loader = DataLoader(test_data, batch_size=opt.batch_size, shuffle=True)
 train_data = torchvision.datasets.ImageFolder(root=os.path.join(opt.file, "sdv2-train"), transform=transform)
 train_loader = DataLoader(train_data, batch_size=opt.batch_size, shuffle=True)
 
-
-def take_second(elem):
-    return elem[1]
 
 
 def norm(x):

@@ -1,12 +1,13 @@
 import torch.nn as nn
+import torch
 
 
 class Block(nn.Module):
     def __init__(self, ch_in, ch_out):
         super(Block, self).__init__()
         self.layers = nn.Sequential(
-            nn.Conv2d(ch_in, ch_out, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(ch_out, momentum=0.95),
+            nn.Conv2d(ch_in, ch_out, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(ch_out, momentum=0.94),
             nn.ReLU(inplace=True)
         )
 
@@ -36,7 +37,15 @@ class Processor(nn.Module):
         self.module_2 = nn.Sequential(
             nn.LayerNorm([args.img_size, args.img_size], elementwise_affine=False)
         )
+        self.edge = torch.zeros(args.img_size, args.img_size).cuda()
+        self.edge[:6] = 1
+        self.edge[-6:] = 1
+        self.edge[:, :6] = 1
+        self.edge[:, -6:] = 1
+        self.edge = self.edge == 1
 
     def forward(self, x):
-        y = self.module_2(self.module_1(x)) * self.args.epsilon
+        y = self.module_2(self.module_1(x))
+        y = torch.where(self.edge.expand(y.size()), 0, y) * self.args.epsilon
+        # y = self.module_2(self.module_1(x)) * self.args.epsilon
         return y

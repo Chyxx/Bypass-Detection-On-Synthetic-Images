@@ -2,7 +2,7 @@
 Spoofing detectors for synthetic images through applying noise to synthetic images by neural networks.
 The detector: [see here](https://github.com/ZhendongWang6/DIRE).
 
-# Updata
+# Update
 **_2023.9.7_**  
 A new method is applied: the gradient direction is estimated by the weighted sum of multiple trial noises. Now, even without the gradient information from the detector, we can achieve even better results. Recognition rate from 64% to 19%, at the same time without any loss of image quality.  
 

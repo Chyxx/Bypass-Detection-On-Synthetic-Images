@@ -18,7 +18,7 @@ A new method is applied: the gradient direction is estimated by the weighted sum
 The method of applying random noise multiple times is used to test the detector, so that the gradient information of the detector is not needed.However, the effect of this method is poor: the decrease of recognition rate is small, and the loss of image quality is too high.
 
 # Result
-## The changing curve of prob2/prob1(The ratio of the recognition rate after processing to that before processing)
+## The changing curve of prob2/prob1 on the validation set
 ![](https://github.com/Chyxx/Bypass-Detection-On-Synthetic-Images/blob/main/images/prob2_prob1.png)  
 
 ## Before processing  

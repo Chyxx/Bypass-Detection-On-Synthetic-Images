@@ -19,7 +19,7 @@ The method of applying random noise multiple times is used to test the detector,
 
 # Result
 ## The changing curve of prob2/prob1 on the validation set
-![](https://github.com/Chyxx/Bypass-Detection-On-Synthetic-Images/blob/main/images/prob2_prob1.png)  
+  ![](https://github.com/Chyxx/Bypass-Detection-On-Synthetic-Images/blob/main/images/prob2_prob1.png)  
 
 ## Before processing  
 ![](https://github.com/Chyxx/Bypass-Detection-On-Synthetic-Images/blob/main/images/before.jpg)

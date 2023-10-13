@@ -45,8 +45,6 @@ def main():
     val_loader = DataLoader(val_data, batch_size=opt.batch_size, shuffle=False)
 
     p_net = Processor(opt).cuda()
-    # checkpoint = torch.load(opt.processor_path)
-    # p_net.load_state_dict(checkpoint['model_state_dict'])
     d_net = Detector(opt).cuda()
     d_net.eval()
     t_net = Trier(opt).cuda()

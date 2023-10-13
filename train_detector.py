@@ -1,3 +1,4 @@
+from config import opt
 from torchvision.models import resnet50, ResNet50_Weights
 from dataset import DetectorDataset
 
@@ -6,6 +7,7 @@ from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import models
 import visdom
+import detector
 
 seed = 23
 torch.manual_seed(seed)  # 为CPU设置随机种子
@@ -31,11 +33,7 @@ def main():
     train_dataloader = DataLoader(train_data, batch_size=64, shuffle=True, num_workers=8)
     test_dataloader = DataLoader(test_data, batch_size=64, shuffle=False, num_workers=8)
     # model
-    model = models.resnet50(weights=ResNet50_Weights.DEFAULT)
-    num_ftrs = model.fc.in_features
-    # for param in model.parameters():
-    #     param.requires_grad = False
-    model.fc = nn.Sequential(nn.Linear(num_ftrs, 2))
+    model = detector.DetectorToTrain(opt)
     model = model.cuda()
     # optimizer
     learning_rate = 0.001
@@ -85,7 +83,7 @@ def main():
             wind.line([correct / len(test_dataloader.dataset)], [i], update="append", opts=dict(title="accuracy"),
                       win="accuracy")
 
-        checkpoint = {"model_state_dict": model.state_dict(),
+        checkpoint = {"model_state_dict": model.model.state_dict(),
                       "optimizer_state_dict": optimizer.state_dict(),
                       "epoch": i}
         path_checkpoint = "data/detector-ckpt/_{}_.pkl".format(i)

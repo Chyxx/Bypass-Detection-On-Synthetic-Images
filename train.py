@@ -3,12 +3,11 @@ import argparse
 import time
 
 import torch.optim as optim
-import torch
-from torch.nn import functional as F
 from torch.utils.data import DataLoader
-import visdom
 from visdom import Visdom
 
+import torch.nn.functional as F
+import numpy as np
 import torch
 import pytorch_msssim as PM
 
@@ -22,7 +21,6 @@ parser.add_argument("--n_epochs", type=int, default=200, help="number of epochs 
 parser.add_argument("--batch_size", type=int, default=16, help="size of the batches")
 parser.add_argument("--lr", type=float, default=0.0005, help="adam: learning rate")
 parser.add_argument("--img_size", type=int, default=200, help="size of each image dimension")
-parser.add_argument("--momentum", type=float, default=0.9, help="momentum of SGD")
 parser.add_argument("--alpha", type=float, default=1e-3, help="coefficient of l1-loss")
 parser.add_argument("--beta", type=float, default=1, help="coefficient of l2-loss")
 parser.add_argument("--gamma", type=float, default=3e-1, help="coefficient of ssim-loss")
@@ -33,20 +31,11 @@ parser.add_argument("--num", type=int, default=20, help="number of try noise")
 parser.add_argument(
     "-f", "--file", default="E:/data/imagenet_ai_0424_sdv5/train", type=str, help="path to data directory"
 )
-
-parser.add_argument("--use_cpu", action="store_true", help="uses gpu by default, turn on to use cpu")
 parser.add_argument("--arch", type=str, default="resnet50")
-parser.add_argument("--aug_norm", type=str2bool, default=False)
 parser.add_argument("--image_channels", type=int, default=3, help="number of image channels")
 parser.add_argument("--model_channels", type=int, default=64, help="number of model channels")
 parser.add_argument("--processor_path", type=str, default="data/processor-ckpt/train_noise/fixed_noise_v2_9_0_.pkl")
 parser.add_argument("--detector_path", type=str, default="data/detector-ckpt/_10_.pkl")
-parser.add_argument(
-    "-m",
-    "--model_path",
-    type=str,
-    default="data/detector-ckpt/imagenet_adm.pth",
-)
 opt = parser.parse_args()
 
 seed = 1
@@ -66,7 +55,7 @@ def norm(x):
 
 def try_noise(noise, r):
     # 采用高斯分布（旧版本采用泊松分布，往往使训练趋向极端化）
-    t = torch.randn_like(torch.sigmoid(noise))
+    t = torch.randn_like(noise)
     t = (t - t.mean()) / torch.var(t) * r
     return t
 
@@ -107,10 +96,10 @@ def main():
 
             ssim = PM.ssim(p_imgs, imgs)
             loss = (
-                # 1000000*F.mse_loss(noise, target_noise)
                     1e3 * (weighted_direction * (target_noise - noise)).mean()
                     # + F.l1_loss(p_imgs, imgs) * opt.alpha
                     # + F.mse_loss(p_imgs, imgs) * opt.beta
+                    # + torch.norm(noise, p=np.inf)
                     # + (1.0 / ssim - 1) * opt.gamma
             )
 

@@ -51,12 +51,12 @@ class ParallelNoise(nn.Module):
             for j in range(imgs.size(0)):
                 weighted_direction[j] /= norm_c[j].item()
             # 利用软阈值函数对加权方向向量进行收缩处理，排除干扰噪声，保留目标方向。
-            abs = torch.abs(weighted_direction)
-            tau = abs.mean(dim=(2, 3)).unsqueeze(dim=2).unsqueeze(dim=3) * 0.5
-            sub = abs - tau
-            zeros = sub - sub
-            n_sub = torch.max(sub, zeros)
-            weighted_direction = torch.mul(torch.sign(weighted_direction), n_sub)
+            # abs = torch.abs(weighted_direction)
+            # tau = abs.mean(dim=(2, 3)).unsqueeze(dim=2).unsqueeze(dim=3) * 0.5
+            # sub = abs - tau
+            # zeros = sub - sub
+            # n_sub = torch.max(sub, zeros)
+            # weighted_direction = torch.mul(torch.sign(weighted_direction), n_sub)
             # 对加权方向向量的距离（高斯分布的方差）归一化，得到梯度近似值的负值
             weighted_direction /= self.args.sigma
             return weighted_direction

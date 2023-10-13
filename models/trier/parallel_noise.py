@@ -5,7 +5,7 @@ import torch.nn as nn
 def try_noise(noise, r):
     # 采用高斯分布（旧版本采用泊松分布，往往使训练趋向极端化）
     t = torch.randn_like(noise)
-    t = (t - t.mean()) / torch.sqrt(torch.var(t)) * r
+    t = (t - t.mean(dim=1, keepdim=True)) / torch.sqrt(torch.var(t, dim=1, keepdim=True)) * r
     return t
 
 

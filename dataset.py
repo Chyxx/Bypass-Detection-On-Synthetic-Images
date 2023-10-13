@@ -66,8 +66,8 @@ class ProcessorDataset(Dataset):
         img = self.imgs[idx]
         tf = transforms.Compose([
             lambda x: Image.open(x).convert('RGB'),
-            transforms.RandomCrop((int(self.resize), int(self.resize))),
-            # transforms.Resize((int(self.resize), int(self.resize))),
+            # transforms.RandomCrop((int(self.resize), int(self.resize))),
+            transforms.Resize((int(self.resize), int(self.resize))),
             transforms.ToTensor(),
         ])
 

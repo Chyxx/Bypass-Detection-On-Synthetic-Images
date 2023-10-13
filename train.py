@@ -96,11 +96,7 @@ def main():
                 t = tt
 
             if i % 1148 == 0 and (epoch != 0 or i != 0):
-                checkpoint = {"model_state_dict": p_net.state_dict(),
-                              "optimizer_state_dict": optimizer.state_dict(),
-                              "epoch": epoch}
-                path_checkpoint = "data/processor-ckpt/with_trier_{}_{}_.pkl".format(epoch, i)
-                torch.save(checkpoint, path_checkpoint)
+                p_net.save(optimizer, epoch, i)
 
                 # test
                 t_val = time.perf_counter()

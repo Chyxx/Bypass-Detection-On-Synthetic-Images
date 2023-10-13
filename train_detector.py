@@ -22,7 +22,7 @@ def one_hot(x, class_count):
 
 def main():
     total_train_step = 0
-    epoch = 50
+    epoch_size = 50
     # visdom
     wind = visdom.Visdom()
     wind.line([0.], [0], win="loss", opts=dict(title="loss"))
@@ -40,8 +40,8 @@ def main():
     optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
     # loss
     criterion = nn.CrossEntropyLoss().cuda()
-    for i in range(epoch):
-        print("-------第{}轮训练开始-------".format(i))
+    for epoch in range(epoch_size):
+        print("-------第{}轮训练开始-------".format(epoch))
         model.train()
         # 训练步骤开始
         for data in train_dataloader:
@@ -77,17 +77,13 @@ def main():
                 total_test_loss += loss.item() / len(test_dataloader)
                 pred = outputs.argmax(dim=1)
                 correct += pred.eq(t).sum().float().item()
-            print("测试：{}，Loss：{}, Accuracy: {}".format(i, total_test_loss,
+            print("测试：{}，Loss：{}, Accuracy: {}".format(epoch, total_test_loss,
                                                          correct / len(test_dataloader.dataset)))
-            wind.line([total_test_loss], [i], update="append", opts=dict(title="loss"), win="loss")
-            wind.line([correct / len(test_dataloader.dataset)], [i], update="append", opts=dict(title="accuracy"),
+            wind.line([total_test_loss], [epoch], update="append", opts=dict(title="loss"), win="loss")
+            wind.line([correct / len(test_dataloader.dataset)], [epoch], update="append", opts=dict(title="accuracy"),
                       win="accuracy")
 
-        checkpoint = {"model_state_dict": model.model.state_dict(),
-                      "optimizer_state_dict": optimizer.state_dict(),
-                      "epoch": i}
-        path_checkpoint = "data/detector-ckpt/_{}_.pkl".format(i)
-        torch.save(checkpoint, path_checkpoint)
+        model.save(optimizer, epoch, 0)
 
 
 if __name__ == "__main__":

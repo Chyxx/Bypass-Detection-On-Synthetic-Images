@@ -11,7 +11,7 @@ parser.add_argument("--beta", type=float, default=1, help="coefficient of l2-los
 parser.add_argument("--gamma", type=float, default=3e-1, help="coefficient of ssim-loss")
 parser.add_argument("--delta", type=float, default=3e-3, help="step of estimated gradient to add")
 parser.add_argument("--epsilon", type=float, default=5e-3, help="std of generated noise")
-parser.add_argument("--sigma", type=float, default=1e-4, help="std of extra noise")
+parser.add_argument("--sigma", type=float, default=1e-3, help="std of extra noise")
 parser.add_argument("--num", type=int, default=20, help="number of try noise")
 parser.add_argument("-f", "--file", default="E:/data/imagenet_ai_0424_sdv5/train", type=str, help="path to data directory")
 parser.add_argument("--image_channels", type=int, default=3, help="number of image channels")

@@ -95,7 +95,7 @@ def main():
                           win="loss", opts=dict(title="loss"), update="append")
                 t = tt
 
-            if i % (len(train_loader) / 10) == 0 and (epoch != 0 or i != 0):
+            if i % (len(train_loader) // 10) == 0 and (epoch != 0 or i != 0):
                 p_net.save(optimizer, epoch, i)
 
                 # test
@@ -117,7 +117,7 @@ def main():
                         avg_ssim += ssim / len(val_loader)
 
                     # line
-                    e = epoch + (i / (len(train_loader)/10)) * 0.1
+                    e = epoch + (i / (len(train_loader)//10)) * 0.1
                     wind.line([(avg_prob2 / avg_prob1).cpu()], [e],
                               win="prob2/prob1", opts=dict(title="prob2/prob1"), update="append")
 

@@ -17,8 +17,8 @@ class ParallelNoise(nn.Module):
 
     def try_noise(self, noise, r):
         # 采用高斯分布（旧版本采用泊松分布，往往使训练趋向极端化）
-        t = torch.randn_like(torch.sigmoid(noise))
-        t = (t - t.mean()) / torch.var(t) * r
+        t = torch.randn_like(noise)
+        t = (t - t.mean()) / torch.sqrt(torch.var(t)) * r
         return t
 
     def forward(self, imgs, noise, d_net):
@@ -28,8 +28,6 @@ class ParallelNoise(nn.Module):
             prob2 = d_net(p_imgs).cpu()
             r = self.args.sigma
             avg_prob3 = torch.zeros(imgs.size(0))
-            # 试探噪声的不加权平均
-            # avg_direction = torch.zeros([imgs.size(0), opt.image_channels, opt.img_size, opt.img_size]).cuda()
             # 以prob差值为权重，对试探噪声的加权平均
             weighted_direction = torch.zeros([imgs.size(0), self.args.image_channels, self.args.img_size, self.args.img_size]).cuda()
             # 规范化系数
@@ -41,7 +39,6 @@ class ParallelNoise(nn.Module):
                 added_prob = d_net(added_imgs).squeeze().cpu().numpy()  # 求试探后的prob
                 # 计算试探后的平均porb，平均方向向量，加权方向向量
                 avg_prob3 += added_prob / self.args.num
-                # avg_direction += t_noise/opt.num
                 for k in range(imgs.size(0)):
                     t_noise[k] *= (prob2[k] - added_prob[k]).item()
                     norm_c[k] += (prob2[k] - added_prob[k]).item() ** 2

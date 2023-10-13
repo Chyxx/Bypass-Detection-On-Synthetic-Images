@@ -31,13 +31,6 @@ def norm(x):
     return x
 
 
-def try_noise(noise, r):
-    # 采用高斯分布（旧版本采用泊松分布，往往使训练趋向极端化）
-    t = torch.randn_like(noise)
-    t = (t - t.mean()) / torch.var(t) * r
-    return t
-
-
 def main():
     data = dataset.ProcessorDataset(opt.file, opt.img_size)
     train_data, val_data = torch.utils.data.random_split(data, [len(data) - 8000, 8000])

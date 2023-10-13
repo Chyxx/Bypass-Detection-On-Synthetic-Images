@@ -2,28 +2,30 @@ import torch
 import torch.nn as nn
 
 
+def try_noise(noise, r):
+    # 采用高斯分布（旧版本采用泊松分布，往往使训练趋向极端化）
+    t = torch.randn_like(noise)
+    t = (t - t.mean()) / torch.sqrt(torch.var(t)) * r
+    return t
+
+
+def norm(x):
+    # Limit value between 0 and 1
+    one = torch.ones_like(x)
+    zero = torch.zeros_like(x)
+    x = torch.where(x > 1, one, x)
+    x = torch.where(x < 0, zero, x)
+    return x
+
+
 class ParallelNoise(nn.Module):
     def __init__(self, args):
         super(ParallelNoise, self).__init__()
         self.args = args
 
-    def norm(self, x):
-        # Limit value between 0 and 1
-        one = torch.ones_like(x)
-        zero = torch.zeros_like(x)
-        x = torch.where(x > 1, one, x)
-        x = torch.where(x < 0, zero, x)
-        return x
-
-    def try_noise(self, noise, r):
-        # 采用高斯分布（旧版本采用泊松分布，往往使训练趋向极端化）
-        t = torch.randn_like(noise)
-        t = (t - t.mean()) / torch.sqrt(torch.var(t)) * r
-        return t
-
     def forward(self, imgs, noise, d_net):
         with torch.no_grad():
-            p_imgs = self.norm(imgs + noise)
+            p_imgs = norm(imgs + noise)
             # Test the detector with extra noise to estimate the gradient direction
             prob2 = d_net(p_imgs).cpu()
             r = self.args.sigma
@@ -34,8 +36,8 @@ class ParallelNoise(nn.Module):
             norm_c = torch.zeros(imgs.size(0))
             for j in range(self.args.num):
                 # 一次试探
-                t_noise = self.try_noise(noise, r)
-                added_imgs = self.norm(imgs + noise + t_noise)
+                t_noise = try_noise(noise, r)
+                added_imgs = norm(imgs + noise + t_noise)
                 added_prob = d_net(added_imgs).squeeze().cpu().numpy()  # 求试探后的prob
                 # 计算试探后的平均porb，平均方向向量，加权方向向量
                 avg_prob3 += added_prob / self.args.num

@@ -80,7 +80,7 @@ def main():
                 pred = outputs.argmax(dim=1)
                 correct += pred.eq(t).sum().float().item()
             print("测试：{}，Loss：{}, Accuracy: {}".format(i, total_test_loss,
-                                                             correct / len(test_dataloader.dataset)))
+                                                         correct / len(test_dataloader.dataset)))
             wind.line([total_test_loss], [i], update="append", opts=dict(title="loss"), win="loss")
             wind.line([correct / len(test_dataloader.dataset)], [i], update="append", opts=dict(title="accuracy"),
                       win="accuracy")
@@ -92,5 +92,5 @@ def main():
         torch.save(checkpoint, path_checkpoint)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()

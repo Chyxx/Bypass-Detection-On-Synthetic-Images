@@ -19,6 +19,7 @@ class Processor(nn.Module):
     """
     和DnCNN类似的思路，但这里是给图像加上噪声
     """
+
     def __init__(self, args):
         super(Processor, self).__init__()
         self.args = args

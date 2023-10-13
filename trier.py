@@ -2,8 +2,6 @@ import torch
 import torch.nn as nn
 
 
-
-
 class Trier(nn.Module):
     def __init__(self, args):
         super(Trier, self).__init__()

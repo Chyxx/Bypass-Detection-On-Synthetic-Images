@@ -6,12 +6,11 @@ import torch.optim as optim
 import torch
 from torch.nn import functional as F
 from torch.utils.data import DataLoader
+import visdom
 from visdom import Visdom
 
 import torch
 import pytorch_msssim as PM
-
-from utils.utils import str2bool
 
 from processor import Processor
 from trier import Trier

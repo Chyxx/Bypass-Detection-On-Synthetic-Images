@@ -1,18 +1,12 @@
 from config import opt
 from utils import norm
 
-import time
-
 from torch.utils.data import DataLoader
-from visdom import Visdom
 
-import torch.nn.functional as F
-import numpy as np
 import torch
 import pytorch_msssim as PM
 
 from processor import Processor
-from trier import Trier
 from detector import Detector
 import dataset
 

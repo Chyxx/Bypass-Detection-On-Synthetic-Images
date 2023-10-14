@@ -29,8 +29,7 @@ class ParallelNoise(nn.Module):
             # Test the detector with extra noise to estimate the gradient direction
             prob2 = d_net(p_imgs).cpu()
             r = self.args.sigma
-            avg_prob3 = torch.zeros(imgs.size(0))
-            # 以prob差值为权重，对试探噪声的加权平均
+            # 以归一化的prob差值为权重，对试探噪声的加权平均
             weighted_direction = torch.zeros([imgs.size(0), self.args.image_channels, self.args.img_size, self.args.img_size]).cuda()
             # 规范化系数
             norm_c = torch.zeros(imgs.size(0))
@@ -39,12 +38,11 @@ class ParallelNoise(nn.Module):
                 t_noise = try_noise(noise, r)
                 added_imgs = norm(imgs + noise + t_noise)
                 added_prob = d_net(added_imgs).squeeze().cpu().numpy()  # 求试探后的prob
-                # 计算试探后的平均porb，平均方向向量，加权方向向量
-                avg_prob3 += added_prob / self.args.num
+                # 计算试探后的加权方向向量
                 for k in range(imgs.size(0)):
                     t_noise[k] *= (prob2[k] - added_prob[k]).item()
                     norm_c[k] += (prob2[k] - added_prob[k]).item() ** 2
-                weighted_direction += t_noise / self.args.num
+                weighted_direction += t_noise
             # 对加权方向向量的prob值归一化，保证loss值稳定性
             norm_c = torch.sqrt(norm_c) + 1e-10
             for j in range(imgs.size(0)):

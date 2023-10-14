@@ -36,13 +36,13 @@ def main():
             avg_ssim += ssim / len(data_loader)
             pred1 = torch.where(prob1 >= 0.5, 1, 0)
             pred2 = torch.where(prob2 >= 0.5, 1, 0)
-            correct1 += pred1.sum().float().item()
-            correct2 += pred2.sum().float().item()
-            if i % 100 == 0:
+            correct1 += pred1.sum().item()
+            correct2 += pred2.sum().item()
+            if i % 20 == 0:
                 print("batch:{}, prob1:{}, prob2:{}".format(i, prob1.mean(), prob2.mean()))
         # print
         print("-------测试结束-------")
-        print("avg_prob1:{}, avg_prob2:{}, avg_prob2/prob1".format(avg_prob1, avg_prob2, avg_prob2 / avg_prob1))
+        print("avg_prob1:{}, avg_prob2:{}, avg_prob2/prob1：{}".format(avg_prob1, avg_prob2, avg_prob2 / avg_prob1))
         print("accuracy1:{}, accuracy2:{}".format(correct1/len(data), correct2/len(data)))
         print("avg_ssim:{}".format(avg_ssim))
 

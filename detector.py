@@ -4,6 +4,7 @@ import torch
 
 import torch.nn as nn
 from torch.nn import functional as F
+from torchvision import transforms
 
 
 class Detector(nn.Module):
@@ -18,6 +19,7 @@ class Detector(nn.Module):
             self.model.load_state_dict(checkpoint['model_state_dict'])
 
     def forward(self, x):
+        x = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]).forward(x)
         return torch.chunk(F.softmax(self.model(x), dim=1), dim=1, chunks=2)[1]
 
 
@@ -35,6 +37,7 @@ class DetectorToTrain(nn.Module):
         self.path = args.detector_save_path
 
     def forward(self, x):
+        x = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]).forward(x)
         return self.model(x)
 
     def save(self, optimizer, epoch, i):

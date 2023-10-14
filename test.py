@@ -45,3 +45,7 @@ def main():
         print("avg_prob1:{}, avg_prob2:{}, avg_prob2/prob1".format(avg_prob1, avg_prob2, avg_prob2 / avg_prob1))
         print("accuracy1:{}, accuracy2:{}".format(correct1/len(data), correct2/len(data)))
         print("avg_ssim:{}".format(avg_ssim))
+
+
+if __name__ == "__main__":
+    main()

@@ -12,7 +12,7 @@ class Processor(nn.Module):
             self.model = DnCNN(args)
 
         if args.processor_path != "":
-            checkpoint = torch.load(args.detector_path)
+            checkpoint = torch.load(args.processor_path)
             self.model.load_state_dict(checkpoint['model_state_dict'])
 
         self.path = args.processor_save_path

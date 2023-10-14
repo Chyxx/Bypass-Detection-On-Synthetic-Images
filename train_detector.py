@@ -1,4 +1,5 @@
 from config import opt
+from utils import one_hot
 from torchvision.models import resnet50, ResNet50_Weights
 from dataset import DetectorDataset
 
@@ -13,11 +14,6 @@ seed = 23
 torch.manual_seed(seed)  # 为CPU设置随机种子
 torch.cuda.manual_seed(seed)  # 为当前GPU设置随机种子
 torch.cuda.manual_seed_all(seed)  # 为所有GPU设置随机种子
-
-
-def one_hot(x, class_count):
-    x = x.cpu()
-    return torch.eye(class_count)[x, :].cuda()
 
 
 def main():

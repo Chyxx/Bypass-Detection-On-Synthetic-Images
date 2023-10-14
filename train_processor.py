@@ -1,5 +1,5 @@
 from config import opt
-
+from utils import norm
 import time
 
 import torch.optim as optim
@@ -21,14 +21,6 @@ torch.manual_seed(seed)  # 为CPU设置随机种子
 torch.cuda.manual_seed(seed)  # 为当前GPU设置随机种子
 torch.cuda.manual_seed_all(seed)  # 为所有GPU设置随机种子
 
-
-def norm(x):
-    # Limit value between 0 and 1
-    one = torch.ones_like(x)
-    zero = torch.zeros_like(x)
-    x = torch.where(x > 1, one, x)
-    x = torch.where(x < 0, zero, x)
-    return x
 
 
 def main():

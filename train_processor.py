@@ -51,13 +51,13 @@ def main():
                 # 噪声的优化目标 = 当前噪声 + 梯度的反方向 * 步长
                 target_noise = noise + weighted_direction * opt.delta
                 # 优化目标的prob，理论上低于原来的prob（随着训练的进行，这个值往往会高于原prob）
-                prob1 = d_net(imgs).cpu()
-                prob2 = d_net(p_imgs).cpu()
-                prob3 = d_net(norm(target_noise + imgs)).cpu()
+                prob1 = d_net(imgs)
+                prob2 = d_net(p_imgs)
+                prob3 = d_net(norm(target_noise + imgs))
 
             ssim = PM.ssim(p_imgs, imgs)
             loss = (
-                    (weighted_direction * (target_noise - noise)).mean() / opt.delta
+                ((weighted_direction * (target_noise - noise)) / torch.unsqueeze(torch.unsqueeze(1 - prob2 + 1e-6, dim=2), dim=3)).mean() / opt.delta
                 # + F.l1_loss(p_imgs, imgs) * opt.alpha
                 # + F.mse_loss(p_imgs, imgs) * opt.beta
                 # + torch.norm(noise, p=np.inf)

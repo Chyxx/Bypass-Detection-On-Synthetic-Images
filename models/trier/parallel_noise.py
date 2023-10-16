@@ -44,7 +44,7 @@ class ParallelNoise(nn.Module):
                     norm_c[k] += (prob2[k] - added_prob[k]).item() ** 2
                 weighted_direction += t_noise
             # 对加权方向向量的prob值归一化，保证loss值稳定性
-            norm_c = torch.sqrt(norm_c) + 1e-10
+            norm_c = torch.sqrt(norm_c) + 1e-20
             for j in range(imgs.size(0)):
                 weighted_direction[j] /= norm_c[j].item()
             # 利用软阈值函数对加权方向向量进行收缩处理，排除干扰噪声，保留目标方向。

@@ -1,12 +1,12 @@
-from config import opt
-from utils.utils import one_hot
-from utils.dataset import DetectorDataset
-
 import torch
+import visdom
 from torch import nn
 from torch.utils.data import DataLoader
-import visdom
+
 import detector
+from config import opt
+from utils.dataset import DetectorDataset
+from utils.utils import one_hot
 
 seed = 23
 torch.manual_seed(seed)  # 为CPU设置随机种子

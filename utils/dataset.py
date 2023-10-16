@@ -1,9 +1,10 @@
-from PIL import Image
-import torch
-from torchvision import transforms
-from torch.utils.data import Dataset, DataLoader
-import os
 import glob
+import os
+
+import torch
+from PIL import Image
+from torch.utils.data import Dataset
+from torchvision import transforms
 
 
 class DetectorDataset(Dataset):

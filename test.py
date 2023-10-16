@@ -1,14 +1,12 @@
-from config import opt
-from utils.utils import norm
-
+import pytorch_msssim as PM
+import torch
 from torch.utils.data import DataLoader
 
-import torch
-import pytorch_msssim as PM
-
-from processor import Processor
+from config import opt
 from detector import Detector
+from processor import Processor
 from utils import dataset
+from utils.utils import norm
 
 
 def main():

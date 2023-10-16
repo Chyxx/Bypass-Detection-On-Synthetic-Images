@@ -1,18 +1,17 @@
-from config import opt
-from utils.utils import norm
 import time
 
+import pytorch_msssim as PM
+import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from visdom import Visdom
 
-import torch
-import pytorch_msssim as PM
-
+from config import opt
+from detector import Detector
 from processor import Processor
 from trier import Trier
-from detector import Detector
 from utils import dataset
+from utils.utils import norm
 
 seed = 1
 torch.manual_seed(seed)  # 为CPU设置随机种子

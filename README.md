@@ -3,7 +3,7 @@ Spoofing detectors for synthetic images through applying noise to synthetic imag
 The detector: [see here](https://github.com/ZhendongWang6/DIRE).(This is the previous detector, now we have used our own trained detector.)
 
 # Update
-**_2023.10.16_**
+**_2023.10.16_**  
 A fatal error: The detector was trained on a dataset that was pre-normalized, but when we used the trained detector to train the processor, it was not applied to the images, which caused the detector performance to be significantly degraded (in fact, they were supposed to achieve 99.99% accuracy, but here they only achieved 70% accuracy).
 We now have that fixed, although our job with a 99.99% accurate detector is many times more difficult than before.
 

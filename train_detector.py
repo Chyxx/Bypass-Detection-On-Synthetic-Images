@@ -1,12 +1,10 @@
 from config import opt
-from utils import one_hot
-from torchvision.models import resnet50, ResNet50_Weights
-from dataset import DetectorDataset
+from utils.utils import one_hot
+from utils.dataset import DetectorDataset
 
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
-from torchvision import models
 import visdom
 import detector
 

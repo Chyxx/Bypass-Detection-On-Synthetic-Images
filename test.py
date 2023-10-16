@@ -1,5 +1,5 @@
 from config import opt
-from utils import norm
+from utils.utils import norm
 
 from torch.utils.data import DataLoader
 
@@ -8,7 +8,7 @@ import pytorch_msssim as PM
 
 from processor import Processor
 from detector import Detector
-import dataset
+from utils import dataset
 
 
 def main():

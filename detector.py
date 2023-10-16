@@ -15,7 +15,7 @@ class Detector(nn.Module):
 
         if args.detector_path != "":
             checkpoint = torch.load(args.detector_path)
-            self.model.model.load_state_dict(checkpoint['model_state_dict'])
+            self.model.load_state_dict(checkpoint['model_state_dict'])
 
     def forward(self, x):
         x = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]).forward(x)

@@ -54,7 +54,7 @@ def main():
 
             ssim = PM.ssim(p_imgs, imgs)
             loss = (
-                (weighted_direction * (target_noise - noise)).sum(dim=(1, 2, 3)).mean() / opt.delta
+                (weighted_direction * (target_noise - noise)).sum(dim=(1, 2, 3)).mean()
                 # + F.l1_loss(p_imgs, imgs) * opt.alpha
                 # + F.mse_loss(p_imgs, imgs) * opt.beta
                 # + torch.norm(noise, p=np.inf)

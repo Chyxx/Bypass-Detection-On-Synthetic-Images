@@ -37,7 +37,7 @@ class DnCNN(nn.Module):
                       kernel_size=3, stride=1, padding=1),
         )
         self.module_2 = nn.Sequential(
-            nn.LayerNorm([args.img_size, args.img_size], elementwise_affine=False)
+            nn.LayerNorm([args.img_size, args.img_size], elementwise_affine=False, eps=1e-40)
         )
 
     def forward(self, x):

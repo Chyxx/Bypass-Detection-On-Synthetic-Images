@@ -21,7 +21,9 @@ class ParallelNoise(nn.Module):
 
     def try_noise(self, noise):
         # 采用高斯分布（旧版本采用泊松分布，往往使训练趋向极端化）
-        return self.model(noise + torch.randn_like(noise) * self.args.sigma) * self.args.epsilon - noise
+        self.model(torch.rand_like(noise)) * self.args.sigma
+        # self.model(noise + torch.randn_like(noise) * self.args.sigma) * self.args.epsilon - noise
+        return self.model(noise + self.model(torch.rand_like(noise)) * self.args.sigma) * self.args.epsilon - noise
 
     def forward(self, imgs, noise, d_net):
         with torch.no_grad():

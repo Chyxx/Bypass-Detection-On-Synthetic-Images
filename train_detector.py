@@ -41,8 +41,6 @@ def main():
         for data in train_dataloader:
             imgs, targets = data
             imgs = imgs.cuda()
-            with torch.no_grad():
-                imgs += torch.randn(imgs.shape,device='cuda',requires_grad=False)/100
             targets = one_hot(targets.cuda(), 2)
             outputs = model(imgs)
             loss = criterion(outputs, targets)
@@ -67,7 +65,7 @@ def main():
                 imgs = imgs.cuda()
                 t = targets.cuda()
                 targets = one_hot(targets.cuda(), 2)
-                outputs = model(imgs + torch.randn(imgs.shape,device='cuda',requires_grad=False)/100)
+                outputs = model(imgs)
                 loss = criterion(outputs, targets)
                 total_test_loss += loss.item() / len(test_dataloader)
                 pred = outputs.argmax(dim=1)

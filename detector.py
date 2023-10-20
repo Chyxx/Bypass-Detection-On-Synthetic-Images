@@ -19,6 +19,7 @@ class Detector(nn.Module):
 
     def forward(self, x):
         x = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]).forward(x)
+        x = x + torch.randn(x.shape,device='cuda',requires_grad=False)/100
         return torch.chunk(F.softmax(self.model(x), dim=1), dim=1, chunks=2)[1]
 
 
@@ -37,6 +38,7 @@ class DetectorToTrain(nn.Module):
 
     def forward(self, x):
         x = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]).forward(x)
+        x = x + torch.randn(x.shape,device='cuda',requires_grad=False)/100
         return self.model(x)
 
     def save(self, optimizer, epoch, i):

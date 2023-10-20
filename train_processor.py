@@ -47,9 +47,9 @@ def main():
                 # 噪声的优化目标 = 当前噪声 + 梯度的反方向 * 步长
                 target_noise = noise + weighted_direction * opt.delta
                 # 优化目标的prob，理论上低于原来的prob（随着训练的进行，这个值往往会高于原prob）
-                prob1 = d_net(imgs + torch.rand(imgs.shape,device='cuda',requires_grad=False)/100)
-                prob2 = d_net(p_imgs + torch.rand(imgs.shape,device='cuda',requires_grad=False)/100)
-                prob3 = d_net(torch.clamp(target_noise + imgs + torch.rand(imgs.shape,device='cuda',requires_grad=False)/100,0.0,1.0))
+                prob1 = d_net(imgs)
+                prob2 = d_net(p_imgs)
+                prob3 = d_net(torch.clamp(target_noise + imgs,0.0,1.0))
 
             ssim = PM.ssim(p_imgs, imgs)
             loss = (
@@ -88,10 +88,10 @@ def main():
                     avg_ssim = 0
                     for j, imgs in enumerate(val_loader):
                         imgs = imgs.cuda()
-                        noise = p_net(imgs+ torch.randn(imgs.shape,device='cuda',requires_grad=False)/100)
+                        noise = p_net(imgs)
                         p_imgs = torch.clamp(imgs + noise,0.0,1.0)
-                        prob1 = d_net(imgs + torch.randn(imgs.shape,device='cuda',requires_grad=False)/100)
-                        prob2 = d_net(p_imgs + torch.randn(p_imgs.shape,device='cuda',requires_grad=False)/100)
+                        prob1 = d_net(imgs)
+                        prob2 = d_net(p_imgs)
                         ssim = PM.ssim(p_imgs, imgs)
                         avg_prob1 += prob1.mean() * imgs.size(0) / len(val_data)
                         avg_prob2 += prob2.mean() * imgs.size(0) / len(val_data)

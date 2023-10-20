@@ -22,8 +22,8 @@ def main():
     wind.line([0.], [0], win="loss", opts=dict(title="loss"))
     wind.line([0.], [0], win="accuracy", opts=dict(title="accuracy"))
     # data
-    train_data = DetectorDataset("E:/data/imagenet_ai_0424_sdv5/train", 200)
-    test_data = DetectorDataset("E:/data/imagenet_ai_0424_sdv5/val", 200)
+    train_data = DetectorDataset("E:/STAR/datasets/SDV_1.5/imagenet_ai_0424_sdv5/train", 200)
+    test_data = DetectorDataset("E:/STAR/datasets/SDV_1.5/imagenet_ai_0424_sdv5/val", 200)
     train_dataloader = DataLoader(train_data, batch_size=64, shuffle=True, num_workers=8)
     test_dataloader = DataLoader(test_data, batch_size=64, shuffle=False, num_workers=8)
     # model
@@ -41,7 +41,8 @@ def main():
         for data in train_dataloader:
             imgs, targets = data
             imgs = imgs.cuda()
-
+            with torch.no_grad():
+                imgs += torch.randn(imgs.shape,device='cuda',requires_grad=False)/100
             targets = one_hot(targets.cuda(), 2)
             outputs = model(imgs)
             loss = criterion(outputs, targets)
@@ -66,7 +67,7 @@ def main():
                 imgs = imgs.cuda()
                 t = targets.cuda()
                 targets = one_hot(targets.cuda(), 2)
-                outputs = model(imgs)
+                outputs = model(imgs + torch.randn(imgs.shape,device='cuda',requires_grad=False)/100)
                 loss = criterion(outputs, targets)
                 total_test_loss += loss.item() / len(test_dataloader)
                 pred = outputs.argmax(dim=1)

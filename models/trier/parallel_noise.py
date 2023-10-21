@@ -3,12 +3,8 @@ import torch.nn as nn
 
 
 def norm(x):
-    # Limit value between 0 and 1
-    one = torch.ones_like(x)
-    zero = torch.zeros_like(x)
-    x = torch.where(x > 1, one, x)
-    x = torch.where(x < 0, zero, x)
-    return x
+    """Limit value between 0 and 1"""
+    return torch.clamp(x, 0, 1)
 
 
 class ParallelNoise(nn.Module):
@@ -21,8 +17,6 @@ class ParallelNoise(nn.Module):
 
     def try_noise(self, noise):
         # 采用高斯分布（旧版本采用泊松分布，往往使训练趋向极端化）
-        self.model(torch.rand_like(noise)) * self.args.sigma
-        # self.model(noise + torch.randn_like(noise) * self.args.sigma) * self.args.epsilon - noise
         return self.model(noise + self.model(torch.rand_like(noise)) * self.args.sigma) * self.args.epsilon - noise
 
     def forward(self, imgs, noise, d_net):
@@ -31,9 +25,9 @@ class ParallelNoise(nn.Module):
             # Test the detector with extra noise to estimate the gradient direction
             prob2 = d_net(p_imgs).squeeze()
             # 以归一化的prob差值为权重，对试探噪声的加权平均
-            weighted_direction = torch.zeros([imgs.size(0), self.args.image_channels, self.args.img_size, self.args.img_size]).cuda()
+            weighted_direction = torch.zeros([imgs.size(0), self.args.image_channels, self.args.img_size, self.args.img_size], device="cuda")
             # 规范化系数
-            norm_c = torch.zeros(imgs.size(0)).cuda()
+            norm_c = torch.zeros(imgs.size(0), device="cuda")
             for j in range(self.args.num):
                 # 一次试探
                 t_noise = self.try_noise(noise)

@@ -27,8 +27,7 @@ def main():
     train_dataloader = DataLoader(train_data, batch_size=64, shuffle=True, num_workers=8)
     test_dataloader = DataLoader(test_data, batch_size=64, shuffle=False, num_workers=8)
     # model
-    model = detector.DetectorToTrain(opt)
-    model = model.cuda()
+    model = detector.DetectorToTrain(opt).cuda()
     # optimizer
     learning_rate = 0.001
     optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)

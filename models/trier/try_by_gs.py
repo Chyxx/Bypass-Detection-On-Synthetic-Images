@@ -12,19 +12,25 @@ def norm(x):
     return x
 
 
-class TryBySVD(nn.Module):
+class TryByGS(nn.Module):
     def __init__(self, args):
-        super(TryBySVD, self).__init__()
+        super(TryByGS, self).__init__()
         self.args = args
         self.model = nn.Sequential(
             nn.LayerNorm([args.img_size, args.img_size], elementwise_affine=False, eps=1e-40)
         )
 
-    def try_noise(self, u, s, vh, t):
-        tmp = torch.matmul(u[:, :, :, t].unsqueeze(dim=3), vh[:, :, t, :].unsqueeze(dim=2)) * s[:, :, t].unsqueeze(dim=2).unsqueeze(dim=3)
-        tmp /= torch.norm(tmp, dim=[2, 3], keepdim=True)
-        tmp *= sqrt(tmp.size(2)*tmp.size(3)) * self.args.sigma
-        return tmp
+
+    def gram_schmidt(self):
+        rand_noise = torch.rand([self.args.num, self.args.image_channels, self.args.img_size, self.args.img_size]).cuda()
+        for i in range(self.args.num):
+            projection = torch.zeros_like(rand_noise[i]).cuda()
+            for k in range(i):
+                projection += (rand_noise[i]*rand_noise[k]).sum() * rand_noise[k]
+            rand_noise[i] -= projection
+            rand_noise[i] /= torch.sqrt((rand_noise[i]*rand_noise[i]).sum())
+        rand_noise *= sqrt(self.args.image_channels * self.args.img_size**2) * self.args.sigma
+        return rand_noise
 
     def forward(self, imgs, noise, d_net):
         with torch.no_grad():
@@ -35,16 +41,16 @@ class TryBySVD(nn.Module):
             weighted_direction = torch.zeros([imgs.size(0), self.args.image_channels, self.args.img_size, self.args.img_size]).cuda()
             # 规范化系数
             norm_c = torch.zeros(imgs.size(0)).cuda()
-            u, s, vh = torch.linalg.svd(noise)
+            gs_noise = self.gram_schmidt()
             for j in range(self.args.num):
                 # 一次试探
-                t_noise = self.try_noise(u, s, vh, j)
+                t_noise = gs_noise[j]
                 added_prob = d_net(norm(imgs + noise + t_noise)).squeeze()  # 求试探后的prob
                 # 计算试探后的加权方向向量
                 c = prob2 - added_prob
-                t_noise *= c.unsqueeze(dim=1).unsqueeze(dim=2).unsqueeze(dim=3)
                 norm_c += c ** 2
-                weighted_direction += t_noise
+                for k in range(imgs.size(0)):
+                    weighted_direction[k] += t_noise * c[k]
             # 对加权方向向量的prob值归一化，保证loss值稳定性
             norm_c = torch.sqrt(norm_c) + 1e-20
             weighted_direction /= norm_c.unsqueeze(dim=1).unsqueeze(dim=2).unsqueeze(dim=3)

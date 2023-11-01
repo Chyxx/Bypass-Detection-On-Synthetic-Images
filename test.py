@@ -6,7 +6,7 @@ from config import opt
 from detector import Detector
 from processor import Processor
 from utils import dataset
-from utils.utils import norm
+from utils.utils import norm, get_prob
 
 
 def main():
@@ -26,8 +26,8 @@ def main():
             imgs = imgs.cuda()
             noise = p_net(imgs)
             p_imgs = norm(imgs + noise)
-            prob1 = d_net(imgs)
-            prob2 = d_net(p_imgs)
+            prob1 = get_prob(d_net(imgs))
+            prob2 = get_prob(d_net(p_imgs))
             ssim = PM.ssim(p_imgs, imgs)
             avg_prob1 += prob1.mean() * imgs.size(0) / len(data)
             avg_prob2 += prob2.mean() * imgs.size(0) / len(data)

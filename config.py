@@ -2,6 +2,7 @@ import argparse
 
 
 parser = argparse.ArgumentParser()
+parser.add_argument("--class_count", type=int, default=2, help="number of epochs of training")
 parser.add_argument("--n_epochs", type=int, default=200, help="number of epochs of training")
 parser.add_argument("--batch_size", type=int, default=16, help="size of the batches")
 parser.add_argument("--lr", type=float, default=1e-5, help="adam: learning rate")

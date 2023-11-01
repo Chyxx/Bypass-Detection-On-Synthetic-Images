@@ -11,7 +11,7 @@ from detector import Detector
 from processor import Processor
 from trier import Trier
 from utils import dataset
-from utils.utils import norm
+from utils.utils import norm, get_prob
 
 seed = 1
 torch.manual_seed(seed)  # 为CPU设置随机种子
@@ -29,7 +29,8 @@ def main():
     p_net = Processor(opt).cuda()
     d_net = Detector(opt).cuda()
     d_net.eval()
-    t_net = Trier(opt).cuda()
+    t_net_0 = Trier(opt, "parallel_noise", d_net).cuda()
+    t_net_1 = Trier(opt, "try_by_svd", d_net).cuda()
     optimizer = optim.AdamW(p_net.parameters(), lr=opt.lr)
     wind = Visdom()
     wind.line([0.], [0], win="prob2/prob1", opts=dict(title="prob2/prob1"))
@@ -44,13 +45,17 @@ def main():
             noise = p_net(imgs)
             p_imgs = norm(imgs + noise)
             with torch.no_grad():
-                weighted_direction = t_net(imgs, noise, d_net)
+                # 交替使用两种试探策略
+                # if i % 2 == 0:
+                # weighted_direction = t_net_0(imgs, noise)
+                # else:
+                weighted_direction = t_net_1(imgs, noise)
                 # 噪声的优化目标 = 当前噪声 + 梯度的反方向 * 步长
                 target_noise = noise + weighted_direction * opt.delta
                 # 优化目标的prob，理论上低于原来的prob（随着训练的进行，这个值往往会高于原prob）
-                prob1 = d_net(imgs)
-                prob2 = d_net(p_imgs)
-                prob3 = d_net(norm(target_noise + imgs))
+                prob1 = get_prob(d_net(imgs))
+                prob2 = get_prob(d_net(p_imgs))
+                prob3 = get_prob(d_net(norm(target_noise + imgs)))
 
             ssim = PM.ssim(p_imgs, imgs)
             loss = (
@@ -91,8 +96,8 @@ def main():
                         imgs = imgs.cuda()
                         noise = p_net(imgs)
                         p_imgs = norm(imgs + noise)
-                        prob1 = d_net(imgs)
-                        prob2 = d_net(p_imgs)
+                        prob1 = get_prob(d_net(imgs))
+                        prob2 = get_prob(d_net(p_imgs))
                         ssim = PM.ssim(p_imgs, imgs)
                         avg_prob1 += prob1.mean() * imgs.size(0) / len(val_data)
                         avg_prob2 += prob2.mean() * imgs.size(0) / len(val_data)

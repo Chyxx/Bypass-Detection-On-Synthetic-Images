@@ -34,6 +34,7 @@ def main():
     optimizer = optim.AdamW(p_net.parameters(), lr=opt.lr)
     wind = Visdom()
     wind.line([0.], [0], win="prob2/prob1", opts=dict(title="prob2/prob1"))
+    wind.line([0.], [0], win="accuracy", opts=dict(title="accuracy"))
     wind.line([0.], [0], win="loss", opts=dict(title="loss"))
 
     for epoch in range(opt.n_epochs):
@@ -114,6 +115,8 @@ def main():
                     e = epoch + (i / (len(train_loader)//10 + 1)) * 0.1
                     wind.line([(avg_prob2 / avg_prob1).cpu()], [e],
                               win="prob2/prob1", opts=dict(title="prob2/prob1"), update="append")
+                    wind.line([(correct2 / len(val_data))], [e],
+                              win="accuracy", opts=dict(title="accuracy"), update="append")
 
                     # image
                     wind.images(imgs.cpu(), win="imgs")

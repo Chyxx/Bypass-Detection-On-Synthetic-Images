@@ -92,6 +92,8 @@ def main():
                     avg_prob1 = 0
                     avg_prob2 = 0
                     avg_ssim = 0
+                    correct1 = 0
+                    correct2 = 0
                     for j, imgs in enumerate(val_loader):
                         imgs = imgs.cuda()
                         noise = p_net(imgs)
@@ -102,6 +104,11 @@ def main():
                         avg_prob1 += prob1.mean() * imgs.size(0) / len(val_data)
                         avg_prob2 += prob2.mean() * imgs.size(0) / len(val_data)
                         avg_ssim += ssim / len(val_loader)
+
+                        pred1 = torch.where(prob1 >= 0.5, 1, 0)
+                        pred2 = torch.where(prob2 >= 0.5, 1, 0)
+                        correct1 += pred1.sum().item()
+                        correct2 += pred2.sum().item()
 
                     # line
                     e = epoch + (i / (len(train_loader)//10 + 1)) * 0.1
@@ -115,6 +122,8 @@ def main():
                     print("epoch: {}, i: {}\navg_prob1: {}, avg_prob2: {}, avg_prob2/prob1: {}"
                           "\navg_ssim: {}".format(
                         epoch, i, avg_prob1, avg_prob2, avg_prob2 / avg_prob1, avg_ssim))
+
+                    print("accuracy1:{}, accuracy2:{}".format(correct1 / len(val_data), correct2 / len(val_data)))
 
                 print(str(time.perf_counter() - t_val) + "s")
 
